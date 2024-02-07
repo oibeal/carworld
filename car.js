@@ -6,10 +6,10 @@ class Car {
         this.height = height;
 
         this.ACCELERATION = .2;
-        this.MAXSPEED = 3;
-        this.MAXREVERSESPEED = -this.MAXSPEED / 2;
+        this.MAX_SPEED = 3;
+        this.MAX_REVERSE_SPEED = -this.MAX_SPEED / 2;
         this.FRICTION = .05;
-        this.TURNRATIO = .03;
+        this.TURN_RATIO = .03;
         this.speed = 0;
         this.angle = 0;
 
@@ -29,10 +29,10 @@ class Car {
             this.speed -= this.ACCELERATION;
         }
 
-        if (this.speed > this.MAXSPEED) {
-            this.speed = this.MAXSPEED;
-        } else if (this.speed < this.MAXREVERSESPEED) {
-            this.speed = this.MAXREVERSESPEED;
+        if (this.speed > this.MAX_SPEED) {
+            this.speed = this.MAX_SPEED;
+        } else if (this.speed < this.MAX_REVERSE_SPEED) {
+            this.speed = this.MAX_REVERSE_SPEED;
         }
 
         if (this.speed > 0) {
@@ -49,10 +49,10 @@ class Car {
             // Turn control
             const flip = this.speed > 0 ? 1 : -1;
             if (this.controls.left) {
-                this.angle += this.TURNRATIO * flip;
+                this.angle += this.TURN_RATIO * flip;
             }
             if (this.controls.right) {
-                this.angle -= this.TURNRATIO * flip;
+                this.angle -= this.TURN_RATIO * flip;
             }
         }
 
