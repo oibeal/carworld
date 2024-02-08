@@ -47,6 +47,8 @@ class Car {
 
             const outputs = NeuralNetwork.feedForward(offsets, this.brain);
             if (this.useBrain) {
+                // TEMP: remove when visualizer finished
+                console.log(outputs);
                 this.controls.forward = outputs[0];
                 this.controls.left = outputs[1];
                 this.controls.right = outputs[2];
