@@ -15,8 +15,18 @@ class Car {
         this.damaged = false;
         this.color = color;
 
-        // TODO: Make sensored car or dummy sensor class
-        this.sensor = controlType === "KEYS" ? new Sensor(this) : null;
+        this.useBrain = controlType == "AI";
+        this.sensor = null;
+        this.brain = null;
+        if (controlType !== "DUMMY") {
+            // TODO: Make sensored car or dummy sensor class
+            this.sensor = new Sensor(this);
+            // 3 layers input:
+            // input: number of trays, hidden: 6, output: number of actions (4)
+            const layers = [this.sensor.rayCount, 6, 4];
+            this.brain = new NeuralNetwork(layers);
+        }
+
         this.controls = new Controls(controlType);
     }
 
@@ -30,6 +40,18 @@ class Car {
         this.damaged = this.#assessDamage(roadBorders, traffic);
         if (this.sensor) {
             this.sensor.update(roadBorders, traffic);
+            const offsets = this.sensor.readings.map(
+                // 1 - offset because want higher values when obstacle is near
+                s => s === null ? 0 : 1 - s.offset
+            );
+
+            const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+            if (this.useBrain) {
+                this.controls.forward = outputs[0];
+                this.controls.left = outputs[1];
+                this.controls.right = outputs[2];
+                this.controls.reverse = outputs[3];
+            }
         }
     }
 
