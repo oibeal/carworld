@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Linear Interpolation</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="lerpCanvas"></canvas>
+
+    <script>
+
+        lerpCanvas.width = window.innerWidth;
+        lerpCanvas.height = window.innerHeight;
+
+        const ctx = lerpCanvas.getContext('2d');
+
+        // const A = { x: 100, y: 200 };
+        // const B = { x: 400, y: 200 };
+        // 
+        // drawDot(A, "A");
+        // drawDot(B, "B");
+        // 
+        // const C = { x: (A.x + B.x) / 2, y: 200 };
+        // const C = {
+        //     x: A.x + (B.x - A.x) * 1 / 2, // linear interpolation equation
+        //     y: 200
+        // };
+
+        // Distance between two points 1/2 = 50% = middle
+        // If values bellow 0 or above 1 then we are extrapolating
+        // const t = 1 / 2;
+        // const C = {
+        //     x: lerp(A.x, B.x, t),
+        //     y: 200
+        // };
+        // drawDot(C, "C");
+        // 
+        // const n = 10;
+        // for (let i = 1; i < n - 1; i++) {
+        //     const t = i / (n - 1);
+        //     const C = {
+        //         x: lerp(A.x, B.x, t),
+        //         y: 200
+        //     };
+        //     drawDot(C, "." + i);
+        // }
+
+        // const D = { x: 100, y: 300 };
+        // const E = { x: 400, y: 100 };
+
+        // drawDot(D, "D");
+        // drawDot(E, "E");
+        // const m = 10;
+        // for (let i = 1; i < m - 1; i++) {
+        //     const t = i / (m - 1);
+        //     // const F = {
+        //     //     x: lerp(D.x, E.x, t),
+        //     //     y: lerp(D.y, E.y, t),
+        //     // };
+        //     const F = vLerp(D, E, t);
+        //     drawDot(F, "." + i);
+        // }
+
+        const A = { x: 100, y: 300 };
+        const B = { x: 400, y: 100 };
+
+        const orange = { r: 230, g: 150, b: 0 };
+        const blue = { r: 0, g: 70, b: 160 };
+
+        const lowFreq = 200;
+        const highFreq = 600;
+
+        let osc = null;
+        let audioCtx = null;
+        lerpCanvas.onclick = function () {
+            if (audioCtx === null) {
+                audioCtx = new (
+                    AudioContext ||
+                    webkitAudioContext ||
+                    window.webkitAudioContext
+                );
+
+                osc = audioCtx.createOscillator();
+                osc.frequency.value = 200;
+                osc.start();
+
+                const node = audioCtx.createGain();
+                node.gain.value = .1;
+
+                osc.connect(node);
+                node.connect(audioCtx.destination);
+            }
+        }
+
+        animate();
+
+        function animate() {
+            ctx.clearRect(0, 0, lerpCanvas.width, lerpCanvas.height);
+
+            drawDot(A, "A");
+            drawDot(B, "B");
+
+            const sec = new Date().getTime() / 1000; // seconds
+            // const t = sec - Math.floor(sec);
+            const t = (Math.sin(sec * Math.PI) + 1) / 2;
+            // const t = Math.abs(Math.sin(sec));
+
+            const C = vLerp(A, B, t);
+            drawDot(C, "");
+
+            const { r, g, b } = vLerp(orange, blue, t);
+            lerpCanvas.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+            if (osc) {
+                osc.frequency.value = lerp(lowFreq, highFreq, t);
+            }
+
+            ctx.strokeStyle = "white";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "top";
+            ctx.font = "bold 40px Arial";
+            ctx.setLineDash([lerp(3, 130, t), 130]);
+            ctx.strokeText("click for sound", lerpCanvas.width / 2, 10);
+            ctx.setLineDash([]);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.fillText("click for sound", lerpCanvas.width / 2, 10);
+
+            requestAnimationFrame(animate);
+        }
+
+        function vLerp(A, B, t) {
+            // return {
+            //     x: lerp(A.x, B.x, t),
+            //     y: lerp(A.y, B.y, t)
+            // };
+
+            const res = {};
+            for (let attr in A) {
+                res[attr] = lerp(A[attr], B[attr], t);
+            };
+            return res;
+        }
+
+        function lerp(a, b, t) {
+            // return a * (1 - t) + b * t; // is the same but with less loss
+            return a + (b - a) * t;
+        }
+
+        function drawDot(pos, label) {
+            ctx.beginPath();
+            ctx.fillStyle = "white";
+            ctx.strokeStyle = "black";
+            ctx.arc(pos.x, pos.y, 10, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = "bold 14px Arial";
+            ctx.fillText(label, pos.x, pos.y);
+        }
+    </script>
+</body>
+
+</html>
