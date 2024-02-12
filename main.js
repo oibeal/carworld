@@ -14,7 +14,7 @@ const traffic = [
 
 animate();
 
-function animate() {
+function animate(time) {
     traffic.forEach(car => car.update(road.borders, []));
     car.update(road.borders, traffic);
     carCanvas.height = window.innerHeight;
@@ -28,6 +28,7 @@ function animate() {
 
     carCtx.restore();
 
+    networkCtx.lineDashOffset = -time / 50;
     Visualizer.drawNetwork(networkCtx, car.brain);
     requestAnimationFrame(animate);
 }
