@@ -63,3 +63,7 @@ function getRGBA(value) {
     const B = value > 0 ? 0 : 255;
     return `rgba(${R},${G},${B},${alpha})`;
 }
+
+function getRandomColor() {
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+}
