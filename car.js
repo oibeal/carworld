@@ -140,14 +140,14 @@ class Car {
         this.y -= Math.cos(this.angle) * this.speed;
     }
 
-    draw(ctx) {
+    draw(ctx, drawSensors = false) {
         ctx.fillStyle = this.damaged ? "maroon" : this.color;
         ctx.beginPath();
         ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
         this.polygon.forEach(point => ctx.lineTo(point.x, point.y));
         ctx.fill();
 
-        if (this.sensor) {
+        if (this.sensor && drawSensors) {
             this.sensor.draw(ctx);
         }
     }
