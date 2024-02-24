@@ -65,5 +65,8 @@ function getRGBA(value) {
 }
 
 function getRandomColor() {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+    const hue = 15 + Math.random() * 325;
+    const saturation = 40 + Math.random() * 60;
+    const lightness = 30 + Math.random() * 60;
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
