@@ -59,7 +59,8 @@ function animate(time) {
     road.draw(carCtx);
     traffic.forEach(car => car.draw(carCtx));
     carCtx.globalAlpha = .3;
-    cars.forEach(car => car.draw(carCtx));
+    // Dibuja todos los coches excepto el mejor
+    cars.filter(car => car !== bestCar).forEach(car => car.draw(carCtx));
     carCtx.globalAlpha = 1;
     // Emphasize first car
     bestCar.draw(carCtx, true);
