@@ -180,10 +180,9 @@ class Car {
             this.width,
             this.height);
         ctx.restore();
-        // ctx.fillStyle = this.damaged ? "maroon" : this.color;
-        // ctx.beginPath();
-        // ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
-        // this.polygon.forEach(point => ctx.lineTo(point.x, point.y));
-        // ctx.fill();
+    }
+
+    distanceFrom(y) {
+        return this.y - y;
     }
 }
